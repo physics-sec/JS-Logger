@@ -3,7 +3,12 @@ function checkDomain(domain) {
 	success = true;
 	var status = document.getElementById('status');
 
-	if(!/^((http|https):\/\/)/.test(domain))
+	if(domain === '')
+	{
+		success = false;
+		status.textContent = 'The domain can\'t be empty';
+	}
+	else if(!/^((http|https):\/\/)/.test(domain))
 	{
 		success = false;
 		status.textContent = 'The domain must start with http(s)://';
@@ -11,7 +16,30 @@ function checkDomain(domain) {
 	else if (domain.replace('://', '').includes('/'))
 	{
 		success = false;
-		status.textContent = 'Domains can\'t have slashes.';
+		status.textContent = 'Domains can\'t have slashes';
+	}
+	if (!success)
+	{
+		setTimeout(function() {
+			status.textContent = '';
+		}, 1000);
+	}
+	return success;
+}
+
+function checkFunction(funcname) {
+	success = true;
+	var status = document.getElementById('status');
+
+	if(funcname === '')
+	{
+		success = false;
+		status.textContent = 'The function name can\'t be empty';
+	}
+	else if(funcname.includes(' '))
+	{
+		success = false;
+		status.textContent = 'The function name can\'t have spaces';
 	}
 	if (!success)
 	{
@@ -77,6 +105,10 @@ function removeWthDomain(){
 function addBlkFunc(){
 	var ul = document.getElementById("listFuncsBlk");
 	var candidate = document.getElementById("inputFuncBlk");
+	if (!checkFunction(candidate.value))
+	{
+		return;
+	}
 	var li = document.createElement("li");
 	li.setAttribute('id',candidate.value);
 	li.appendChild(document.createTextNode(candidate.value));
@@ -87,6 +119,10 @@ function addBlkFunc(){
 function removeBlkFunc(){
 	var ul = document.getElementById("listFuncsBlk");
 	var candidate = document.getElementById("inputFuncBlk");
+	if (!checkFunction(candidate.value))
+	{
+		return;
+	}
 	var item = document.getElementById(candidate.value);
 	ul.removeChild(item);
 	document.getElementById("inputFuncBlk").value = '';
@@ -95,6 +131,10 @@ function removeBlkFunc(){
 function addWthFunc(){
 	var ul = document.getElementById("listFuncsWth");
 	var candidate = document.getElementById("inputFuncWth");
+	if (!checkFunction(candidate.value))
+	{
+		return;
+	}
 	var li = document.createElement("li");
 	li.setAttribute('id',candidate.value);
 	li.appendChild(document.createTextNode(candidate.value));
@@ -105,6 +145,10 @@ function addWthFunc(){
 function removeWthFunc(){
 	var ul = document.getElementById("listFuncsWth");
 	var candidate = document.getElementById("inputFuncWth");
+	if (!checkFunction(candidate.value))
+	{
+		return;
+	}
 	var item = document.getElementById(candidate.value);
 	ul.removeChild(item);
 	document.getElementById("inputFuncWth").value = '';
