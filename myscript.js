@@ -1,6 +1,4 @@
 
-//var port = chrome.runtime.connect();
-
 var port;
 
 var reconnectToExtension = function () {
@@ -22,6 +20,7 @@ window.addEventListener("message", function (event)
 	port.postMessage(event.data);
 }, false);
 
+// Default configurations
 chrome.storage.sync.set({
 	blk_sites: true,
 	wht_sites: false,

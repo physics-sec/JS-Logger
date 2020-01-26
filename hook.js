@@ -1,6 +1,9 @@
 
 var send_data_to_bkg = function (func, args, dump, result)
 {
+	if (result !== null && result !== undefined)
+		result = result.toString()
+
 	msg_JSLogger = JSON.parse(JSON.stringify({
 		domain_JSLogger: window.origin,
 		func_JSLogger: func,
@@ -44,34 +47,58 @@ apply_handle = {
 }
 
 dont_hook = [
-	"postMessage",
 	"send_data_to_bkg",
 	"dumpObj",
-	"open",
-	"setTimeout"
+	"postMessage"
 ]
-
-window.open = new Proxy(window.open, apply_handle);
-window.setTimeout = new Proxy(window.setTimeout, apply_handle);
-document.createElement = new Proxy(document.createElement, apply_handle);
-Element.prototype.appendChild = new Proxy(Element.prototype.appendChild, apply_handle);
-Element.prototype.removeChild = new Proxy(Element.prototype.removeChild, apply_handle);
-Element.prototype.addEventListener = new Proxy(Element.prototype.addEventListener, apply_handle);
-Element.prototype.removeEventListener = new Proxy(Element.prototype.removeEventListener, apply_handle);
-
-var funciones = [];
-var variables = [];
 
 for (var prop in this)
 {
-	if (this.hasOwnProperty(prop) && this[prop] instanceof Function && !dont_hook.includes(this[prop].name))
+	if (this[prop] instanceof Function && !dont_hook.includes(this[prop].name))
 	{
 		this[prop] = new Proxy(this[prop], apply_handle);
-		funciones.push( [this[prop]] );
 
 	}
-	else if (this.hasOwnProperty(prop) && (!this[prop] instanceof Function))
+}
+
+var names = [];
+for (name in document)
+{
+	names.push(name);
+}
+
+for (var i = names.length - 1; i >= 0; i--)
+{
+	if (document[names[i]] instanceof Function && !dont_hook.includes(names[i]))
 	{
-		variables.push( [prop, this[prop]] );
+		document[names[i]] = new Proxy(document[names[i]], apply_handle);
+	}
+}
+
+var names = [];
+for (name in window)
+{
+	names.push(name);
+}
+
+for (var i = names.length - 1; i >= 0; i--)
+{
+	if (window[names[i]] instanceof Function && !dont_hook.includes(names[i]))
+	{
+		window[names[i]] = new Proxy(window[names[i]], apply_handle);
+	}
+}
+
+var names = [];
+for (name in Element.prototype)
+{
+	names.push(name);
+}
+
+for (var i = names.length - 1; i >= 0; i--)
+{
+	if (Element.prototype[names[i]] instanceof Function && !dont_hook.includes(names[i]))
+	{
+		Element.prototype[names[i]] = new Proxy(Element.prototype[names[i]], apply_handle);
 	}
 }
