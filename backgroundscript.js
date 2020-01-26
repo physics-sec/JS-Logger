@@ -1,14 +1,8 @@
 
 
-var blk_sites = false;
-var wht_sites = false;
-var blk_funcs = false;
-var wht_funcs = false;
-
 chrome.runtime.onConnect.addListener(function (port)
 {
-	port.onMessage.addListener(function (msg)
-	{
+	loadFilters = function () {
 		chrome.storage.sync.get([
 			'blk_sites',
 			'wht_sites',
@@ -28,15 +22,22 @@ chrome.runtime.onConnect.addListener(function (port)
 			blacklisted_funcs = result.blacklisted_funcs;
 			whitelisted_funcs = result.whitelisted_funcs;
 		});
+	}
 
-		if ( (!blk_sites && !wht_sites) || (blk_sites && !blacklisted_sites.includes(msg.domain)) || (wht_sites  && whitelisted_sites.includes(msg.domain)))
+	chrome.storage.onChanged.addListener(function(changes, namespace) {
+		loadFilters();
+	  });
+
+	port.onMessage.addListener(function (msg)
+	{
+		if (typeof blk_sites === 'undefined')
+			loadFilters();
+
+		if ( (!blk_sites && !wht_sites) || (blk_sites && !blacklisted_sites.includes(msg.domain_JSLogger)) || (wht_sites  && whitelisted_sites.includes(msg.domain_JSLogger)))
 		{
-			if ( (!blk_funcs && !wht_funcs) || (blk_funcs && !blacklisted_funcs.includes(msg.func)) || (wht_funcs  && whitelisted_funcs.includes(msg.func)))
+			if ( (!blk_funcs && !wht_funcs) || (blk_funcs && !blacklisted_funcs.includes(msg.func_JSLogger)) || (wht_funcs  && whitelisted_funcs.includes(msg.func_JSLogger)))
 			{
-				var args = msg.args;
-				if (args !== undefined)
-					args = args.join(", ").substr(1);
-				log_entry = '%c' + msg.domain + '\n%c' + msg.func + '\n%cparams:' + args + '\n' + msg.dump + 'returned: ' + msg.result
+				log_entry = '%c' + msg.domain_JSLogger + '\n%c' + msg.func_JSLogger + '\n%cparams:' + msg.args_JSLogger + '\n' + msg.dump_JSLogger + 'returned: ' + msg.result_JSLogger
 				console.log(log_entry, 'font-weight: bold;', 'color: blue;', '');
 				console.log('-------------------------------');
 			}

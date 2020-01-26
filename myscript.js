@@ -22,6 +22,20 @@ window.addEventListener("message", function (event)
 	port.postMessage(event.data);
 }, false);
 
+chrome.storage.sync.set({
+	blk_sites: true,
+	wht_sites: false,
+	blacklisted_sites: [
+		'https://www.youtube.com',
+		'https://www.google.com'
+	],
+	whitelisted_sites: [],
+	blk_funcs: false,
+	wht_funcs: false,
+	blacklisted_funcs: [],
+	whitelisted_funcs: []
+});
+
 var s = document.createElement('script');
 s.src = chrome.extension.getURL('hook.js');
 document.documentElement.appendChild(s);

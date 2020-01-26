@@ -118,25 +118,68 @@ document.addEventListener('DOMContentLoaded', function () {
 	document.getElementById('removeitem3').addEventListener('click', removeItem3);
 	document.getElementById('additem4').addEventListener('click', addItem4);
 	document.getElementById('removeitem4').addEventListener('click', removeItem4);
-
 	document.getElementById('save').addEventListener('click', save_options);
 
+	chrome.storage.sync.get([
+		'blk_sites',
+		'wht_sites',
+		'blacklisted_sites',
+		'whitelisted_sites',
+		'blk_funcs',
+		'wht_funcs',
+		'blacklisted_funcs',
+		'whitelisted_funcs'
+		], function(result) {
+		blk_sites = result.blk_sites;
+		wht_sites = result.wht_sites;
+		blacklisted_sites = result.blacklisted_sites;
+		whitelisted_sites = result.whitelisted_sites;
+		blk_funcs = result.blk_funcs;
+		wht_funcs = result.wht_funcs;
+		blacklisted_funcs = result.blacklisted_funcs;
+		whitelisted_funcs = result.whitelisted_funcs;
+	});
+
+	console.log('blk_sites: ' + blk_sites);
+
+	document.getElementById('blk_sites').checked = blk_sites;
+	document.getElementById('wht_sites').checked = wht_sites;
+	document.getElementById('blk_funcs').checked = blk_funcs;
+	document.getElementById('wht_funcs').checked = wht_funcs;
+
+
 	var ul = document.getElementById("dynamic-list1");
+	for (var i = 0; i < blacklisted_sites.length; i++)
+	{
+		var li = document.createElement("li");
+		li.appendChild(document.createTextNode(blacklisted_sites[i]));
+		ul.appendChild(li);
+	}
 
-	var li = document.createElement("li");
-	li.setAttribute('id', 'youtube');
-	li.appendChild(document.createTextNode('https://www.youtube.com'));
-	ul.appendChild(li);
+	var ul = document.getElementById("dynamic-list2");
+	for (var i = 0; i < whitelisted_sites.length; i++)
+	{
+		var li = document.createElement("li");
+		li.appendChild(document.createTextNode(whitelisted_sites[i]));
+		ul.appendChild(li);
+	}
 
-	var li = document.createElement("li");
-	li.setAttribute('id', 'google');
-	li.appendChild(document.createTextNode('https://www.google.com'));
-	ul.appendChild(li);
+	var ul = document.getElementById("dynamic-list3");
+	for (var i = 0; i < blacklisted_funcs.length; i++)
+	{
+		var li = document.createElement("li");
+		li.appendChild(document.createTextNode(blacklisted_funcs[i]));
+		ul.appendChild(li);
+	}
 
-	document.getElementById('blk_sites').checked = true;
-	document.getElementById('wht_sites').checked = false;
-	document.getElementById('blk_funcs').checked = false;
-	document.getElementById('wht_funcs').checked = false;
+	var ul = document.getElementById("dynamic-list4");
+	for (var i = 0; i < whitelisted_funcs.length; i++)
+	{
+		var li = document.createElement("li");
+		li.appendChild(document.createTextNode(whitelisted_funcs[i]));
+		ul.appendChild(li);
+	}
+
 
 });
 

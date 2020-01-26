@@ -1,15 +1,14 @@
 
 var send_data_to_bkg = function (func, args, dump, result)
 {
-	msg = {
-		domain: window.origin,
-		func: func,
-		args: args,
-		dump: dump,
-		result: result
-	}
-	msg2 = JSON.parse(JSON.stringify(msg));
-	window.postMessage(msg2, "*");
+	msg_JSLogger = JSON.parse(JSON.stringify({
+		domain_JSLogger: window.origin,
+		func_JSLogger: func,
+		args_JSLogger: args,
+		dump_JSLogger: dump,
+		result_JSLogger: result
+	}));
+	window.postMessage(msg_JSLogger, "*");
 }
 
 var dumpObj = function (obj)
@@ -35,9 +34,10 @@ apply_handle = {
 	{
 		if (args[0] != "debugger")
 		{
+			args_list = args.join(", ");
 			dump = dumpObj(args[0]);
 			result = target.apply(thisArg, args);
-			send_data_to_bkg(target.name, args, dump, result);
+			send_data_to_bkg(target.name, args_list, dump, result);
 			return result;
 		}
 	}
