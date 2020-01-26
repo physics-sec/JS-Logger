@@ -13,14 +13,14 @@ chrome.runtime.onConnect.addListener(function (port)
 			'blacklisted_funcs',
 			'whitelisted_funcs'
 			], function(result) {
-			blk_sites = result.blk_sites;
-			wht_sites = result.wht_sites;
-			blacklisted_sites = result.blacklisted_sites;
-			whitelisted_sites = result.whitelisted_sites;
-			blk_funcs = result.blk_funcs;
-			wht_funcs = result.wht_funcs;
-			blacklisted_funcs = result.blacklisted_funcs;
-			whitelisted_funcs = result.whitelisted_funcs;
+				blk_sites = result.blk_sites;
+				wht_sites = result.wht_sites;
+				blacklisted_sites = result.blacklisted_sites;
+				whitelisted_sites = result.whitelisted_sites;
+				blk_funcs = result.blk_funcs;
+				wht_funcs = result.wht_funcs;
+				blacklisted_funcs = result.blacklisted_funcs;
+				whitelisted_funcs = result.whitelisted_funcs;
 		});
 	}
 
