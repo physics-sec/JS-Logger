@@ -1,7 +1,34 @@
 
+function checkDomain(domain) {
+	success = true;
+	var status = document.getElementById('status');
+
+	if(!/^((http|https):\/\/)/.test(domain))
+	{
+		success = false;
+		status.textContent = 'The domain must start with http(s)://';
+	}
+	else if (domain.replace('://', '').includes('/'))
+	{
+		success = false;
+		status.textContent = 'Domains can\'t have slashes.';
+	}
+	if (!success)
+	{
+		setTimeout(function() {
+			status.textContent = '';
+		}, 1000);
+	}
+	return success;
+}
+
 function addBlkDomain(){
 	var ul = document.getElementById("listDomainsBlk");
 	var candidate = document.getElementById("inputDomainBlk");
+	if (!checkDomain(candidate.value))
+	{
+		return;
+	}
 	var li = document.createElement("li");
 	li.setAttribute('id',candidate.value);
 	li.appendChild(document.createTextNode(candidate.value));
@@ -12,6 +39,10 @@ function addBlkDomain(){
 function removeBlkDomain(){
 	var ul = document.getElementById("listDomainsBlk");
 	var candidate = document.getElementById("inputDomainBlk");
+	if (!checkDomain(candidate.value))
+	{
+		return;
+	}
 	var item = document.getElementById(candidate.value);
 	ul.removeChild(item);
 	document.getElementById("inputDomainBlk").value = '';
@@ -20,6 +51,10 @@ function removeBlkDomain(){
 function addWthDomain(){
 	var ul = document.getElementById("listDomainWth");
 	var candidate = document.getElementById("inputDomainWht");
+	if (!checkDomain(candidate.value))
+	{
+		return;
+	}
 	var li = document.createElement("li");
 	li.setAttribute('id',candidate.value);
 	li.appendChild(document.createTextNode(candidate.value));
@@ -30,6 +65,10 @@ function addWthDomain(){
 function removeWthDomain(){
 	var ul = document.getElementById("listDomainWth");
 	var candidate = document.getElementById("inputDomainWht");
+	if (!checkDomain(candidate.value))
+	{
+		return;
+	}
 	var item = document.getElementById(candidate.value);
 	ul.removeChild(item);
 	document.getElementById("inputDomainWht").value = '';
@@ -104,7 +143,7 @@ function save_options() {
 		status.textContent = 'Options saved.';
 		setTimeout(function() {
 			status.textContent = '';
-		}, 750);
+		}, 800);
 	});
 }
 
@@ -130,7 +169,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		'blacklisted_funcs',
 		'whitelisted_funcs'
 		], function(result) {
-			console.log('ahi te va:' + result.blk_sites);
 			blk_sites = result.blk_sites;
 			wht_sites = result.wht_sites;
 			blacklisted_sites = result.blacklisted_sites;

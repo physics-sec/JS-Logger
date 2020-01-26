@@ -75,5 +75,3 @@ for (var prop in this)
 		variables.push( [prop, this[prop]] );
 	}
 }
-
-console.log("Loaded JS Logger.")
