@@ -54,7 +54,10 @@ dont_hook = [
 
 for (var name in this)
 	if (this[name] instanceof Function && !dont_hook.includes(this[name].name))
+	{
+		dont_hook.push(this[name].name);
 		this[name] = new Proxy(this[name], apply_handle);
+	}
 
 var names = [];
 for (name in document)
@@ -62,7 +65,10 @@ for (name in document)
 
 for (var i = names.length - 1; i >= 0; i--)
 	if (document[names[i]] instanceof Function && !dont_hook.includes(names[i]))
+	{
+		dont_hook.push(name);
 		document[names[i]] = new Proxy(document[names[i]], apply_handle);
+	}
 
 var names = [];
 for (name in window)
@@ -70,7 +76,21 @@ for (name in window)
 
 for (var i = names.length - 1; i >= 0; i--)
 	if (window[names[i]] instanceof Function && !dont_hook.includes(names[i]))
+	{
+		dont_hook.push(name);
 		window[names[i]] = new Proxy(window[names[i]], apply_handle);
+	}
+
+var names = [];
+for (name in console)
+	names.push(name);
+
+for (var i = names.length - 1; i >= 0; i--)
+	if (console[names[i]] instanceof Function && !dont_hook.includes(names[i]))
+	{
+		dont_hook.push(name);
+		console[names[i]] = new Proxy(console[names[i]], apply_handle);
+	}
 
 var names = [];
 for (name in Element.prototype)
@@ -80,7 +100,10 @@ for (var i = names.length - 1; i >= 0; i--)
 {
 	try {
 		if (Element.prototype[names[i]] instanceof Function && !dont_hook.includes(names[i]))
+		{
+			dont_hook.push(name);
 			Element.prototype[names[i]] = new Proxy(Element.prototype[names[i]], apply_handle);
+		}
 	}
 	catch(err) {
 		continue
