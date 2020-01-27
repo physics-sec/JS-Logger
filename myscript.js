@@ -20,19 +20,25 @@ window.addEventListener("message", function (event)
 	port.postMessage(event.data);
 }, false);
 
-// Default configurations
-chrome.storage.sync.set({
-	blk_sites: true,
-	wht_sites: false,
-	blacklisted_sites: [
-		'https://www.youtube.com',
-		'https://www.google.com'
-	],
-	whitelisted_sites: [],
-	blk_funcs: false,
-	wht_funcs: false,
-	blacklisted_funcs: [],
-	whitelisted_funcs: []
+setDefaultConfiguration = function (){
+	chrome.storage.sync.set({
+		blk_sites: true,
+		wht_sites: false,
+		blacklisted_sites: [
+			'https://www.youtube.com',
+			'https://www.google.com'
+		],
+		whitelisted_sites: [],
+		blk_funcs: false,
+		wht_funcs: false,
+		blacklisted_funcs: [],
+		whitelisted_funcs: []
+	});
+}
+
+chrome.storage.sync.get('blk_sites', function(data) {
+	if (typeof data.blk_sites === 'undefined')
+		setDefaultConfiguration();
 });
 
 var s = document.createElement('script');
