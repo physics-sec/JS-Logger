@@ -10,7 +10,7 @@
 
 	<ul id="listDomainsBlk"></ul>
 
-	<input type="text" id="inputDomainBlk"/>
+	<input type="text" id="inputDomainBlk" placeholder="domain name to blacklist"/>
 	<button id="addBlkDomain">add domain</button>
 	<button id="removeBlkDomain">remove domain</button>
 
@@ -21,7 +21,7 @@
 
 	<ul id="listDomainWth"></ul>
 
-	<input type="text" id="inputDomainWht"/>
+	<input type="text" id="inputDomainWht"  placeholder="domain name to whitelist"/>
 	<button id="addWthDomain">add domain</button>
 	<button id="removeWthDomain">remove domain</button>
 
@@ -31,7 +31,7 @@
 
 	<ul id="listFuncsBlk"></ul>
 
-	<input type="text" id="inputFuncBlk"/>
+	<input type="text" id="inputFuncBlk" placeholder="function name to blacklist"/>
 	<button id="addBlkFunc">add function</button>
 	<button id="removeBlkFunc">remove function</button>
 
@@ -41,9 +41,18 @@
 
 	<ul id="listFuncsWth"></ul>
 
-	<input type="text" id="inputFuncWth"/>
+	<input type="text" id="inputFuncWth" placeholder="function name to whitelist"/>
 	<button id="addWthFunc">add function</button>
 	<button id="removeWthFunc">remove function</button>
+
+	<br>
+	<br>
+	<label><input type="checkbox" id="filter_param">Filter functions calls based on the parameter</label>
+	<span id="filter_param_value"></span>
+	<br>
+	<input type="text" id="inputParamFilter" placeholder="parameter value to search for"/>
+	<button id="filterParam">set filter</button>
+
 
 	<br><br>
 	<button id="save">Save</button>

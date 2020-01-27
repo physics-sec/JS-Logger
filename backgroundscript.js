@@ -11,7 +11,9 @@ chrome.runtime.onConnect.addListener(function (port)
 			'blk_funcs',
 			'wht_funcs',
 			'blacklisted_funcs',
-			'whitelisted_funcs'
+			'whitelisted_funcs',
+			'filter_param',
+			'paramFilter'
 			], function(result) {
 				blk_sites = result.blk_sites;
 				wht_sites = result.wht_sites;
@@ -21,6 +23,8 @@ chrome.runtime.onConnect.addListener(function (port)
 				wht_funcs = result.wht_funcs;
 				blacklisted_funcs = result.blacklisted_funcs;
 				whitelisted_funcs = result.whitelisted_funcs;
+				filter_param = result.filter_param;
+				paramFilter = result.paramFilter;
 		});
 	}
 
@@ -37,9 +41,12 @@ chrome.runtime.onConnect.addListener(function (port)
 		{
 			if ( (!blk_funcs && !wht_funcs) || (blk_funcs && !blacklisted_funcs.includes(msg.func_JSLogger)) || (wht_funcs  && whitelisted_funcs.includes(msg.func_JSLogger)))
 			{
-				log_entry = '%c' + msg.domain_JSLogger + '\n%c' + msg.func_JSLogger + '\n%cparams:' + msg.args_JSLogger + '\n' + msg.dump_JSLogger + 'returned: ' + msg.result_JSLogger
-				console.log(log_entry, 'font-weight: bold;', 'color: blue;', '');
-				console.log('-------------------------------');
+				if (!filter_param || (filter_param && msg.args_JSLogger !== undefined && msg.args_JSLogger.includes(paramFilter)))
+				{
+					log_entry = '%c' + msg.domain_JSLogger + '\n%c' + msg.func_JSLogger + '\n%cparams:' + msg.args_JSLogger + '\n' + msg.dump_JSLogger + 'returned: ' + msg.result_JSLogger
+					console.log(log_entry, 'font-weight: bold;', 'color: blue;', '');
+					console.log('-------------------------------');
+				}
 			}
 		}
 	})

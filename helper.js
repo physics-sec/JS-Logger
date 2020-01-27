@@ -154,6 +154,18 @@ function removeWthFunc(){
 	document.getElementById("inputFuncWth").value = '';
 }
 
+function filterParam(){
+	var span = document.getElementById("filter_param_value");
+	var input_user = document.getElementById("inputParamFilter").value;
+	if (input_user === undefined || input_user === "")
+		span.innerText = "";
+	else
+	{
+		span.innerText = ". Searching for the param: " + input_user;
+		document.getElementById("inputParamFilter").value = "";
+	}
+}
+
 function save_options() {
 	var blk_sites = document.getElementById('blk_sites').checked;
 	var wht_sites = document.getElementById('wht_sites').checked;
@@ -173,6 +185,9 @@ function save_options() {
 	var list = document.getElementById("listFuncsWth");
 	var whitelisted_funcs = list.innerText.split(/\n/);
 
+	var filter_param = document.getElementById('filter_param').checked;
+	var paramFilter = document.getElementById("filter_param_value").innerText.substring(27);
+
 	chrome.storage.sync.set({
 		blk_sites: blk_sites,
 		wht_sites: wht_sites,
@@ -181,7 +196,9 @@ function save_options() {
 		blk_funcs: blk_funcs,
 		wht_funcs: wht_funcs,
 		blacklisted_funcs: blacklisted_funcs,
-		whitelisted_funcs: whitelisted_funcs
+		whitelisted_funcs: whitelisted_funcs,
+		filter_param: filter_param,
+		paramFilter: paramFilter
 	}, function() {
 		var status = document.getElementById('status');
 		status.textContent = 'Options saved.';
@@ -201,6 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	document.getElementById('removeBlkFunc').addEventListener('click', removeBlkFunc);
 	document.getElementById('addWthFunc').addEventListener('click', addWthFunc);
 	document.getElementById('removeWthFunc').addEventListener('click', removeWthFunc);
+	document.getElementById('filterParam').addEventListener('click', filterParam);
 	document.getElementById('save').addEventListener('click', save_options);
 
 	chrome.storage.sync.get([
@@ -211,7 +229,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		'blk_funcs',
 		'wht_funcs',
 		'blacklisted_funcs',
-		'whitelisted_funcs'
+		'whitelisted_funcs',
+		'filter_param',
+		'paramFilter'
 		], function(result) {
 			blk_sites = result.blk_sites;
 			wht_sites = result.wht_sites;
@@ -221,11 +241,14 @@ document.addEventListener('DOMContentLoaded', function () {
 			wht_funcs = result.wht_funcs;
 			blacklisted_funcs = result.blacklisted_funcs;
 			whitelisted_funcs = result.whitelisted_funcs;
+			filter_param = result.filter_param;
+			paramFilter = result.paramFilter;
 
 			document.getElementById('blk_sites').checked = blk_sites;
 			document.getElementById('wht_sites').checked = wht_sites;
 			document.getElementById('blk_funcs').checked = blk_funcs;
 			document.getElementById('wht_funcs').checked = wht_funcs;
+			document.getElementById('filter_param').checked = filter_param;
 
 
 			var ul = document.getElementById("listDomainsBlk");
@@ -259,6 +282,11 @@ document.addEventListener('DOMContentLoaded', function () {
 				li.appendChild(document.createTextNode(whitelisted_funcs[i]));
 				ul.appendChild(li);
 			}
+
+			if (paramFilter !== undefined && paramFilter !== "")
+			{
+				var span = document.getElementById("filter_param_value");
+				span.innerText = ". Searching for the param: " + paramFilter;
+			}
 	});
 });
-

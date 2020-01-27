@@ -32,7 +32,9 @@ setDefaultConfiguration = function (){
 		blk_funcs: false,
 		wht_funcs: false,
 		blacklisted_funcs: [],
-		whitelisted_funcs: []
+		whitelisted_funcs: [],
+		filter_param: false,
+		paramFilter: ""
 	});
 }
 
