@@ -43,7 +43,15 @@ chrome.runtime.onConnect.addListener(function (port)
 			{
 				if (!filter_param || (filter_param && msg.args_JSLogger !== undefined && msg.args_JSLogger.includes(paramFilter)))
 				{
-					log_entry = '%c' + msg.domain_JSLogger + '\n%c' + msg.func_JSLogger + '\n%cparams:' + msg.args_JSLogger + '\n' + msg.dump_JSLogger + 'returned: ' + msg.result_JSLogger
+					log_entry  = '%c' + msg.domain_JSLogger;
+					log_entry += '\n%c' + msg.func_JSLogger;
+					if (msg.args_JSLogger !== '')
+						log_entry += '\n%cparams:' + msg.args_JSLogger;
+					log_entry += '\n' + msg.dump_JSLogger;
+					if (msg.result_JSLogger !== '' && msg.result_JSLogger !== undefined)
+						log_entry += 'returned: ' + msg.result_JSLogger;
+					if (msg.result_dump_JSLogger !== '')
+						log_entry += '\n' + msg.result_dump_JSLogger;
 					console.log(log_entry, 'font-weight: bold;', 'color: blue;', '');
 					console.log('-------------------------------');
 				}

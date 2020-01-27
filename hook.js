@@ -1,6 +1,7 @@
 
 var send_data_to_bkg = function (func, args, dump, result)
 {
+	var result_dump = dumpObj(result);
 	if (result !== null && result !== undefined)
 		result = result.toString()
 
@@ -9,7 +10,8 @@ var send_data_to_bkg = function (func, args, dump, result)
 		func_JSLogger: func,
 		args_JSLogger: args,
 		dump_JSLogger: dump,
-		result_JSLogger: result
+		result_JSLogger: result,
+		result_dump_JSLogger: result_dump
 	}));
 	window.postMessage(msg_JSLogger, "*");
 }
@@ -17,16 +19,16 @@ var send_data_to_bkg = function (func, args, dump, result)
 var dumpObj = function (obj)
 {
 	dump = "";
-	if (obj instanceof HTMLObjectElement)
+	if (obj instanceof HTMLObjectElement && obj.data !== '')
 		dump += "data: " + obj.data + "\n";
 
-	if (obj instanceof HTMLDivElement)
+	if (obj instanceof HTMLDivElement && obj.innerHTML !== '')
 		dump += "innerHTML: " + obj.innerHTML + "\n";
 
-	if (obj instanceof HTMLFrameElement)
+	if (obj instanceof HTMLFrameElement && obj.src !== '')
 	{
 		dump += "src: " + obj.src + "\n";
-		if (obj.contentDocument)
+		if (obj.contentDocument && obj.contentDocument.innerHTML !== '')
 			dump += "contentDocument.innerHTML: " + obj.contentDocument.innerHTML + "\n";
 	}
 	return dump;
@@ -46,67 +48,46 @@ apply_handle = {
 	}
 }
 
+// Hooks
+
 dont_hook = [
 	"send_data_to_bkg",
 	"dumpObj",
 	"postMessage"
 ]
 
-for (var name in this)
-	if (this[name] instanceof Function && !dont_hook.includes(this[name].name))
-	{
-		dont_hook.push(this[name].name);
-		this[name] = new Proxy(this[name], apply_handle);
-	}
+contexts = [
+	this,
+	document,
+	window,
+	console,
+	Element.prototype
+]
 
-var names = [];
-for (name in document)
-	names.push(name);
-
-for (var i = names.length - 1; i >= 0; i--)
-	if (document[names[i]] instanceof Function && !dont_hook.includes(names[i]))
-	{
-		dont_hook.push(name);
-		document[names[i]] = new Proxy(document[names[i]], apply_handle);
-	}
-
-var names = [];
-for (name in window)
-	names.push(name);
-
-for (var i = names.length - 1; i >= 0; i--)
-	if (window[names[i]] instanceof Function && !dont_hook.includes(names[i]))
-	{
-		dont_hook.push(name);
-		window[names[i]] = new Proxy(window[names[i]], apply_handle);
-	}
-
-var names = [];
-for (name in console)
-	names.push(name);
-
-for (var i = names.length - 1; i >= 0; i--)
-	if (console[names[i]] instanceof Function && !dont_hook.includes(names[i]))
-	{
-		dont_hook.push(name);
-		console[names[i]] = new Proxy(console[names[i]], apply_handle);
-	}
-
-var names = [];
-for (name in Element.prototype)
-	names.push(name);
-
-for (var i = names.length - 1; i >= 0; i--)
+for (var i = contexts.length - 1; i >= 0; i--)
 {
-	try {
-		if (Element.prototype[names[i]] instanceof Function && !dont_hook.includes(names[i]))
-		{
-			dont_hook.push(name);
-			Element.prototype[names[i]] = new Proxy(Element.prototype[names[i]], apply_handle);
-		}
+	var context = contexts[i];
+	var names = [];
+
+	for (name in context)
+	{
+		names.push(name);
 	}
-	catch(err) {
-		continue
+
+	for (var j = names.length - 1; j >= 0; j--)
+	{
+		var name = names[j];
+		try {
+			if (context[name] instanceof Function && !dont_hook.includes(name))
+			{
+				dont_hook.push(name);
+				context[name] = new Proxy(context[name], apply_handle);
+			}
+		}
+		catch(err) {
+			continue
+		}
 	}
 }
 
+console.log('JS Logger: Logging ' + dont_hook.length + ' functions');
