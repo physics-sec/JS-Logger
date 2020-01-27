@@ -80,10 +80,7 @@ for (var i = names.length - 1; i >= 0; i--)
 {
 	try {
 		if (Element.prototype[names[i]] instanceof Function && !dont_hook.includes(names[i]))
-		{
-			console.log(names[i]);
 			Element.prototype[names[i]] = new Proxy(Element.prototype[names[i]], apply_handle);
-		}
 	}
 	catch(err) {
 		continue
