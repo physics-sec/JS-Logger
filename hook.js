@@ -48,13 +48,7 @@ apply_handle = {
 	}
 }
 
-dont_hook = [
-	send_data_to_bkg,
-	dumpObj,
-	postMessage
-]
-
-proxyAll = function (contexts) {
+function proxyAll (contexts) {
 
 	for (var i = contexts.length - 1; i >= 0; i--)
 	{
@@ -72,8 +66,8 @@ proxyAll = function (contexts) {
 			try {
 				if (context[name] instanceof Function && !dont_hook.includes(context[name]))
 				{
-					dont_hook.push(context[name]);
 					context[name] = new Proxy(context[name], apply_handle);
+					dont_hook.push(context[name]);
 				}
 			}
 			catch(err) {
@@ -82,6 +76,19 @@ proxyAll = function (contexts) {
 		}
 	}
 }
+
+function renewWindow() {
+	proxyAll( [window] )
+	setTimeout(renewWindow, 100);
+}
+
+dont_hook = [
+	send_data_to_bkg,
+	dumpObj,
+	postMessage,
+	proxyAll,
+	renewWindow
+]
 
 contexts = [
 	this,
@@ -92,9 +99,5 @@ contexts = [
 
 proxyAll(contexts)
 
-function renewWindow() {
-	proxyAll( [window] )
-	setTimeout(renewWindow, 100);
-}
 
 renewWindow();
