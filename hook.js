@@ -48,46 +48,53 @@ apply_handle = {
 	}
 }
 
-// Hooks
-
 dont_hook = [
-	"send_data_to_bkg",
-	"dumpObj",
-	"postMessage"
+	send_data_to_bkg,
+	dumpObj,
+	postMessage
 ]
 
-contexts = [
-	this,
-	document,
-	window,
-	console,
-	Element.prototype
-]
+proxyAll = function (contexts) {
 
-for (var i = contexts.length - 1; i >= 0; i--)
-{
-	var context = contexts[i];
-	var names = [];
-
-	for (name in context)
+	for (var i = contexts.length - 1; i >= 0; i--)
 	{
-		names.push(name);
-	}
+		var context = contexts[i];
+		var names = [];
 
-	for (var j = names.length - 1; j >= 0; j--)
-	{
-		var name = names[j];
-		try {
-			if (context[name] instanceof Function && !dont_hook.includes(name))
-			{
-				dont_hook.push(name);
-				context[name] = new Proxy(context[name], apply_handle);
-			}
+		for (name in context)
+		{
+			names.push(name);
 		}
-		catch(err) {
-			continue
+
+		for (var j = names.length - 1; j >= 0; j--)
+		{
+			var name = names[j];
+			try {
+				if (context[name] instanceof Function && !dont_hook.includes(context[name]))
+				{
+					dont_hook.push(context[name]);
+					context[name] = new Proxy(context[name], apply_handle);
+				}
+			}
+			catch(err) {
+				continue
+			}
 		}
 	}
 }
 
-console.log('JS Logger: Logging ' + dont_hook.length + ' functions');
+contexts = [
+	this,
+	document,
+	console,
+	Element.prototype
+]
+
+proxyAll(contexts)
+
+function renewWindow() {
+	proxyAll( [window] )
+	setTimeout(renewWindow, 100);
+}
+
+renewWindow();
