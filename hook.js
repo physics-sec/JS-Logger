@@ -80,18 +80,14 @@ function proxyAll (contexts) {
 	}
 }
 
-function renewWindow() {
-	proxyAll( [window] )
-	setTimeout(renewWindow, 100);
-}
 
 dont_hook = [
 	send_data_to_bkg,
 	dumpObj,
 	postMessage,
 	proxyAll,
-	renewWindow,
-	apply_handle
+	apply_handle,
+	setInterval
 ]
 
 contexts = [
@@ -103,5 +99,6 @@ contexts = [
 
 proxyAll(contexts)
 
-
-renewWindow();
+setInterval(function () {
+	proxyAll( [window] );
+}, 100);
