@@ -34,18 +34,21 @@ var dumpObj = function (obj)
 	return dump;
 }
 
-apply_handle = {
-	apply: function (target, thisArg, args)
-	{
-		if (args[0] != "debugger")
+
+function apply_handle (context) {
+	context = context.toString().slice(8, -1);
+	handle = {
+		apply: function (target, thisArg, args)
 		{
 			args_list = args.join(", ");
 			dump = dumpObj(args[0]);
 			result = target.apply(thisArg, args);
-			send_data_to_bkg(target.name, args_list, dump, result);
+			funcname = context + '.' + target.name
+			send_data_to_bkg(funcname, args_list, dump, result);
 			return result;
 		}
 	}
+	return handle;
 }
 
 function proxyAll (contexts) {
@@ -66,7 +69,7 @@ function proxyAll (contexts) {
 			try {
 				if (context[name] instanceof Function && !dont_hook.includes(context[name]))
 				{
-					context[name] = new Proxy(context[name], apply_handle);
+					context[name] = new Proxy(context[name], apply_handle(context));
 					dont_hook.push(context[name]);
 				}
 			}
@@ -87,7 +90,8 @@ dont_hook = [
 	dumpObj,
 	postMessage,
 	proxyAll,
-	renewWindow
+	renewWindow,
+	apply_handle
 ]
 
 contexts = [
