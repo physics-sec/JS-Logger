@@ -31,6 +31,16 @@ var dumpObj = function (obj)
 		if (obj.contentDocument && obj.contentDocument.innerHTML !== '')
 			dump += "contentDocument.innerHTML: " + obj.contentDocument.innerHTML + "\n";
 	}
+
+	if (obj instanceof HTMLScriptElement)
+	{
+		if (obj.src !== '')
+			dump += "src: " + obj.src + "\n";
+
+		if (obj.innerHTML !== '')
+			dump += "innerHTML: " + obj.innerHTML + "\n";
+	}
+
 	return dump;
 }
 
@@ -89,6 +99,9 @@ dont_hook = [
 	apply_handle,
 	setInterval
 ]
+
+// not interesting
+dont_hook.push(window.getComputedStyle)
 
 contexts = [
 	this,
