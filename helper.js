@@ -71,8 +71,12 @@ function removeBlkDomain(){
 	{
 		return;
 	}
-	var item = document.getElementById(candidate.value);
-	ul.removeChild(item);
+	for (var i = 0; i < ul.childNodes.length; i++) {
+		if (ul.childNodes[i].innerText === candidate.value) {
+			ul.removeChild(ul.childNodes[i]);
+			break;
+		}
+	}
 	document.getElementById("inputDomainBlk").value = '';
 }
 
@@ -97,8 +101,12 @@ function removeWthDomain(){
 	{
 		return;
 	}
-	var item = document.getElementById(candidate.value);
-	ul.removeChild(item);
+	for (var i = 0; i < ul.childNodes.length; i++) {
+		if (ul.childNodes[i].innerText === candidate.value) {
+			ul.removeChild(ul.childNodes[i]);
+			break;
+		}
+	}
 	document.getElementById("inputDomainWht").value = '';
 }
 
@@ -123,8 +131,12 @@ function removeBlkFunc(){
 	{
 		return;
 	}
-	var item = document.getElementById(candidate.value);
-	ul.removeChild(item);
+	for (var i = 0; i < ul.childNodes.length; i++) {
+		if (ul.childNodes[i].innerText === candidate.value) {
+			ul.removeChild(ul.childNodes[i]);
+			break;
+		}
+	}
 	document.getElementById("inputFuncBlk").value = '';
 }
 
@@ -149,8 +161,12 @@ function removeWthFunc(){
 	{
 		return;
 	}
-	var item = document.getElementById(candidate.value);
-	ul.removeChild(item);
+	for (var i = 0; i < ul.childNodes.length; i++) {
+		if (ul.childNodes[i].innerText === candidate.value) {
+			ul.removeChild(ul.childNodes[i]);
+			break;
+		}
+	}
 	document.getElementById("inputFuncWth").value = '';
 }
 
@@ -172,18 +188,30 @@ function save_options() {
 
 	var list = document.getElementById("listDomainsBlk");
 	var blacklisted_sites = list.innerText.split(/\n/);
+	if (blacklisted_sites.length === 1 && blacklisted_sites[0] === ""){
+		blacklisted_sites = []
+	}
 
 	var list = document.getElementById("listDomainWth");
 	var whitelisted_sites = list.innerText.split(/\n/);
+	if (whitelisted_sites.length === 1 && whitelisted_sites[0] === ""){
+		whitelisted_sites = []
+	}
 
 	var blk_funcs = document.getElementById('blk_funcs').checked;
 	var wht_funcs = document.getElementById('wht_funcs').checked;
 
 	var list = document.getElementById("listFuncsBlk");
 	var blacklisted_funcs = list.innerText.split(/\n/);
+	if (blacklisted_funcs.length === 1 && blacklisted_funcs[0] === ""){
+		blacklisted_funcs = []
+	}
 
 	var list = document.getElementById("listFuncsWth");
 	var whitelisted_funcs = list.innerText.split(/\n/);
+	if (whitelisted_funcs.length === 1 && whitelisted_funcs[0] === ""){
+		whitelisted_funcs = []
+	}
 
 	var filter_param = document.getElementById('filter_param').checked;
 	var paramFilter = document.getElementById("filter_param_value").innerText.substring(27);
@@ -244,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			filter_param = result.filter_param;
 			paramFilter = result.paramFilter;
 
+
 			document.getElementById('blk_sites').checked = blk_sites;
 			document.getElementById('wht_sites').checked = wht_sites;
 			document.getElementById('blk_funcs').checked = blk_funcs;
@@ -254,6 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			var ul = document.getElementById("listDomainsBlk");
 			for (var i = 0; i < blacklisted_sites.length; i++)
 			{
+				if (whitelisted_funcs[i] === "") continue;
 				var li = document.createElement("li");
 				li.appendChild(document.createTextNode(blacklisted_sites[i]));
 				ul.appendChild(li);
@@ -262,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			var ul = document.getElementById("listDomainWth");
 			for (var i = 0; i < whitelisted_sites.length; i++)
 			{
+				if (whitelisted_funcs[i] === "") continue;
 				var li = document.createElement("li");
 				li.appendChild(document.createTextNode(whitelisted_sites[i]));
 				ul.appendChild(li);
@@ -270,6 +301,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			var ul = document.getElementById("listFuncsBlk");
 			for (var i = 0; i < blacklisted_funcs.length; i++)
 			{
+				if (whitelisted_funcs[i] === "") continue;
 				var li = document.createElement("li");
 				li.appendChild(document.createTextNode(blacklisted_funcs[i]));
 				ul.appendChild(li);
@@ -278,6 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			var ul = document.getElementById("listFuncsWth");
 			for (var i = 0; i < whitelisted_funcs.length; i++)
 			{
+				if (whitelisted_funcs[i] === "") continue;
 				var li = document.createElement("li");
 				li.appendChild(document.createTextNode(whitelisted_funcs[i]));
 				ul.appendChild(li);
